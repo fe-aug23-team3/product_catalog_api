@@ -15,10 +15,17 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "cors": "^2.8.5",
+    "dotenv": "^16.3.1",
     "eslint-config-prettier": "^9.1.0",
-    "express": "^4.18.2"
+    "express": "^4.18.2",
+    "pg": "^8.11.3",
+    "pg-hstore": "^2.3.4",
+    "sequelize": "^6.35.1",
+    "sequelize-typescript": "^2.1.6"
   },
   "devDependencies": {
+    "@types/cors": "^2.8.17",
     "@types/express": "^4.17.21",
     "@types/node": "^20.10.4",
     "@typescript-eslint/eslint-plugin": "^6.13.2",
@@ -33,6 +40,7 @@
     "lint-staged": "^15.2.0",
     "nodemon": "^3.0.2",
     "prettier": "^3.1.1",
+    "sequelize-cli": "^6.6.2",
     "ts-node": "^10.9.2",
     "typescript": "^5.3.3"
   },
