@@ -1,4 +1,5 @@
 import express from 'express';
+import path from 'path';
 import cors from 'cors';
 import { phoneRouter } from './routes/phone.route';
 
@@ -11,7 +12,7 @@ function createServer() {
     }),
   );
 
-  app.use('/public', express.static('public'));
+  app.use('/public', express.static(path.join(__dirname, 'public')));
 
   app.use('/phones', express.json(), phoneRouter);
 
