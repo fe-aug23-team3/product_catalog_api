@@ -6,7 +6,16 @@ const pathToFile = path.join(__dirname, '../../api/', 'phones.json');
 
 const fileToRead = fs.readFileSync(pathToFile, 'utf-8');
 
-const phones = JSON.parse(fileToRead);
+const phones: Phone[] = JSON.parse(fileToRead).map((phone: Phone) => {
+  const discount = Math.round(
+    ((phone.fullPrice - phone.price) / phone.fullPrice) * 100,
+  );
+
+  return {
+    ...phone,
+    discount,
+  };
+});
 
 export const getAll = (query: QueryParams) => {
   const { sortBy, amountPhones, page }: QueryParams = query;
@@ -37,4 +46,18 @@ export const getAll = (query: QueryParams) => {
   }
 
   return filteredPhones;
+};
+
+export const getHottest = () => {
+  const sortByDiscount = [...phones].sort(
+    (a: Phone, b: Phone) => b.discount - a.discount,
+  );
+
+  return sortByDiscount.slice(0, 8);
+};
+
+export const getNewest = () => {
+  const sortByYear = [...phones].sort((a: Phone, b: Phone) => b.year - a.year);
+
+  return sortByYear.slice(0, 8);
 };

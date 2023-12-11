@@ -13,6 +13,7 @@ export interface Phone {
   ram: string;
   year: number;
   image: string;
+  discount: number;
 }
 
 export type QueryParams = { [key: string]: any };
