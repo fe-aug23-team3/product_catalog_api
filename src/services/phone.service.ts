@@ -1,6 +1,9 @@
 import fs from 'fs';
 import path from 'path';
+import env from 'dotenv';
 import { Phone, QueryParams } from '../types/phoneType';
+
+env.config();
 
 const pathToFile = path.join(__dirname, '../../api/', 'phones.json');
 
@@ -14,8 +17,11 @@ const phones: Phone[] = JSON.parse(fileToRead).map((phone: Phone) => {
   return {
     ...phone,
     discount,
+    image: `${process.env.SERVER_PATH}public/${phone.image}`,
   };
 });
+
+console.log(phones);
 
 export const getAll = (query: QueryParams) => {
   const { sortBy, amountPhones, page }: QueryParams = query;
