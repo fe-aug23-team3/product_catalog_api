@@ -17,7 +17,7 @@ const phones: Phone[] = JSON.parse(fileToRead).map((phone: Phone) => {
   return {
     ...phone,
     discount,
-    image: `${process.env.SERVER_PATH}public/${phone.image}`,
+    image: `${process.env.SERVER_PATH}/public/${phone.image}`,
   };
 });
 
