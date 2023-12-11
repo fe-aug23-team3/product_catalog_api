@@ -21,9 +21,7 @@ const phones: Phone[] = JSON.parse(fileToRead).map((phone: Phone) => {
   };
 });
 
-console.log(phones);
-
-export const getAll = (query: QueryParams) => {
+export const getAllWithPagination = (query: QueryParams) => {
   const { sortBy, amountPhones, page }: QueryParams = query;
 
   let filteredPhones: Phone[] = [...phones];
@@ -31,6 +29,9 @@ export const getAll = (query: QueryParams) => {
   switch (sortBy) {
     case 'newest':
       filteredPhones = phones.sort((a: Phone, b: Phone) => b.year - a.year);
+      break;
+    case 'oldest':
+      filteredPhones = phones.sort((a: Phone, b: Phone) => a.year - b.year);
       break;
     case 'highestPrice':
       filteredPhones = phones.sort((a: Phone, b: Phone) => a.price - b.price);
@@ -54,7 +55,7 @@ export const getAll = (query: QueryParams) => {
   return filteredPhones;
 };
 
-export const getHottest = () => {
+export const getBiggestDiscount = () => {
   const sortByDiscount = [...phones].sort(
     (a: Phone, b: Phone) => b.discount - a.discount,
   );
@@ -67,3 +68,9 @@ export const getNewest = () => {
 
   return sortByYear.slice(0, 8);
 };
+
+export const findPhone = (phoneId: string) => {
+  return phones.find((phone) => phone.phoneId === phoneId);
+};
+
+export const phonesLength = () => phones.length;

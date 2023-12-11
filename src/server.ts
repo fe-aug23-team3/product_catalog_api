@@ -13,7 +13,7 @@ function createServer() {
     }),
   );
 
-  app.use('/public', express.static(path.join(__dirname, '../public')));
+  app.use('/public', express.static(path.resolve('../public')));
 
   app.use('/phones', express.json(), phoneRouter);
 
