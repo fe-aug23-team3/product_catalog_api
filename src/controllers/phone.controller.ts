@@ -1,7 +1,5 @@
 import * as phoneService from '../services/phone.service';
 import { Request, Response } from 'express';
-import fs from 'fs';
-import path from 'path';
 
 export const getAllPhones = (req: Request, res: Response) => {
   const allPhones = phoneService.getAllWithPagination(req.query);
@@ -16,25 +14,21 @@ export const getNewest = (req: Request, res: Response) => {
   res.send(phoneService.getNewest());
 };
 
-export const getPhone = (req: Request, res: Response) => {
+export const getPhone = async (req: Request, res: Response) => {
   const { phoneId } = req.params;
 
-  fs.readFile(path.resolve(`../../api/phones/${phoneId}.json`), (err, data) => {
-    if (err) {
-      res.sendStatus(404);
-
-      return;
+  try {
+    const phoneDetail = await phoneService.getDetail(phoneId);
+    res.send(phoneDetail);
+  } catch (error) {
+    if ((error as NodeJS.ErrnoException).code === 'ENOENT') {
+      res.status(404).send('Phone detail not found');
+    } else {
+      res.status(500).send('Internal Server Error');
     }
-
-    const result = {
-      phoneDetails: data,
-      phone: JSON.stringify(phoneService.findPhone(phoneId)),
-    };
-
-    res.send(JSON.stringify(result));
-  });
+  }
 };
 
-export const phoneLength = (req: Request, res: Response) => {
+export const getPhoneLength = (req: Request, res: Response) => {
   res.send(phoneService.phonesLength());
 };

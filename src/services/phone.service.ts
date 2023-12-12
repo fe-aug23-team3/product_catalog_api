@@ -2,6 +2,7 @@ import fs from 'fs';
 import path from 'path';
 import env from 'dotenv';
 import { Phone, QueryParams } from '../types/phoneType';
+import { getPhoneDetail } from '../helpers/helper';
 
 env.config();
 
@@ -33,11 +34,11 @@ export const getAllWithPagination = (query: QueryParams) => {
     case 'oldest':
       filteredPhones = phones.sort((a: Phone, b: Phone) => a.year - b.year);
       break;
-    case 'highestPrice':
+    case 'lowestPrice':
       filteredPhones = phones.sort((a: Phone, b: Phone) => a.price - b.price);
       break;
 
-    case 'lowestPrice':
+    case 'highestPrice':
       filteredPhones = phones.sort((a: Phone, b: Phone) => b.price - a.price);
       break;
 
@@ -73,4 +74,10 @@ export const findPhone = (phoneId: string) => {
   return phones.find((phone) => phone.phoneId === phoneId);
 };
 
-export const phonesLength = () => phones.length;
+export const getDetail = async (id: string) => {
+  const phoneDetail = await getPhoneDetail(id);
+
+  return phoneDetail;
+};
+
+export const phonesLength = () => String(phones.length);
