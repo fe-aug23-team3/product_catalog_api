@@ -23,33 +23,39 @@ const phones: Phone[] = JSON.parse(fileToRead).map((phone: Phone) => {
 });
 
 export const getAllWithPagination = (query: QueryParams) => {
-  const { sortBy, amountPhones, page }: QueryParams = query;
+  const { sortBy, itemsPerPage, page }: QueryParams = query;
 
   let filteredPhones: Phone[] = [...phones];
 
   switch (sortBy) {
-    case 'newest':
+    case 'Newest':
       filteredPhones = phones.sort((a: Phone, b: Phone) => b.year - a.year);
       break;
-    case 'oldest':
+    case 'Oldest':
       filteredPhones = phones.sort((a: Phone, b: Phone) => a.year - b.year);
       break;
-    case 'lowestPrice':
-      filteredPhones = phones.sort((a: Phone, b: Phone) => a.price - b.price);
+    case 'Alphabetically':
+      filteredPhones = phones.sort((a: Phone, b: Phone) =>
+        a.name.localeCompare(b.name),
+      );
       break;
 
-    case 'highestPrice':
-      filteredPhones = phones.sort((a: Phone, b: Phone) => b.price - a.price);
+    case 'Cheapest':
+      filteredPhones = phones.sort((a: Phone, b: Phone) => a.price - b.price);
       break;
 
     default:
       break;
   }
 
-  if (amountPhones && page) {
+  if (itemsPerPage === 'All') {
+    return filteredPhones;
+  }
+
+  if (itemsPerPage && page) {
     filteredPhones = filteredPhones.slice(
-      (Number(page) - 1) * Number(amountPhones),
-      Number(page) * Number(amountPhones),
+      (Number(page) - 1) * Number(itemsPerPage),
+      Number(page) * Number(itemsPerPage),
     );
   }
 
