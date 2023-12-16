@@ -9,8 +9,14 @@
     "lint": "eslint ./src --ignore-path .gitignore --fix",
     "dev": "nodemon src/server.ts",
     "start": "npx ts-node ./src/server.ts",
+    "db": "psql -h dpg-clstgigcmk4c73cf18mg-a.frankfurt-postgres.render.com -U user product_catalog_db_2y5v",
     "fix-style": "npm run format && npm run lint",
-    "prepare": "husky install"
+    "prepare": "husky install",
+    "migrate": "npx sequelize-cli db:migrate",
+    "seed-all": " npx sequelize-cli db:seed:all",
+    "unseed-all": "npx sequelize db:seed:undo:all",
+    "undo-phones": "npx sequelize-cli db:migrate:undo --name 20231216174947-create-phones-table.js",
+    "undo-phone-details": "npx sequelize-cli db:migrate:undo --name 20231216153622-create-phoneDetails-table.js"
   },
   "keywords": [],
   "author": "",
