@@ -1,26 +1,27 @@
-import fs from 'fs';
-import path from 'path';
-import env from 'dotenv';
+// import fs from 'fs';
+// import path from 'path';
+import dotenv from 'dotenv';
+import { Op } from 'sequelize';
 // import { QueryParams } from '../types/phoneType';
 import { Phone, PhoneDetails } from '../models';
 
-env.config();
+dotenv.config();
 
-const pathToFile = path.join(__dirname, '../../api/', 'phones.json');
+// const pathToFile = path.join(__dirname, '../../api/', 'phones.json');
 
-const fileToRead = fs.readFileSync(pathToFile, 'utf-8');
+// const fileToRead = fs.readFileSync(pathToFile, 'utf-8');
 
-export const phones: Phone[] = JSON.parse(fileToRead).map((phone: Phone) => {
-  const discount = Math.round(
-    ((phone.fullPrice - phone.price) / phone.fullPrice) * 100,
-  );
+// export const phones: Phone[] = JSON.parse(fileToRead).map((phone: Phone) => {
+//   const discount = Math.round(
+//     ((phone.fullPrice - phone.price) / phone.fullPrice) * 100,
+//   );
 
-  return {
-    ...phone,
-    discount,
-    image: `${process.env.SERVER_PATH}/public/${phone.image}`,
-  };
-});
+//   return {
+//     ...phone,
+//     discount,
+//     image: `${process.env.SERVER_PATH}/public/${phone.image}`,
+//   };
+// });
 
 // export const getAllWithPagination = (query: QueryParams) => {
 //   const { sortBy, itemsPerPage, page }: QueryParams = query;
@@ -124,31 +125,28 @@ export const findPhonesDetails = async (phoneId: string) => {
 };
 
 export const findRecomendation = async (phoneId: string) => {
-  const phoneToFind = await PhoneDetails.findByPk(phoneId);
-  const allPhones = await findAll();
-  let sortedByPrice = null;
-
-  if (phoneToFind) {
-    const price = phoneToFind.priceRegular;
-
-    sortedByPrice = allPhones.sort((a, b) => {
-      const priceDifferenceA = Math.abs(a.fullPrice - price - 200);
-      const priceDifferenceB = Math.abs(b.fullPrice - price - 200);
-      return priceDifferenceA - priceDifferenceB;
-    });
-  }
-
-  const resData: Phone[] = [];
-
-  sortedByPrice?.slice(0, 40).forEach((data) => {
-    const existingItem = resData.find(
-      (item) => item.fullPrice === data.fullPrice,
-    );
-
-    if (!existingItem) {
-      resData.push(data);
-    }
+  const phoneToFind = await Phone.findAll({
+    where: {
+      phoneId,
+    },
   });
 
-  return resData;
+  const allPhones = await Phone.findAll({
+    where: {
+      price: {
+        [Op.between]: [phoneToFind[0].price - 400, phoneToFind[0].price + 400],
+      },
+      year: {
+        [Op.between]: [phoneToFind[0].year - 2, phoneToFind[0].year + 2],
+      },
+      id: {
+        [Op.ne]: phoneToFind[0].id,
+      },
+      ram: {
+        [Op.gte]: phoneToFind[0].ram,
+      },
+    },
+  });
+
+  return allPhones.slice(0, 8);
 };

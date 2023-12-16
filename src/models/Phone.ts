@@ -29,6 +29,7 @@ export class Phone extends Model {
   @Column({
     type: DataType.STRING,
     allowNull: false,
+    field: 'phoneId',
   })
   phoneId: string;
 

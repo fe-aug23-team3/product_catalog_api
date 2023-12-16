@@ -1,5 +1,4 @@
 import { Table, Column, Model, DataType } from 'sequelize-typescript';
-import { PhoneDescription } from '../types/phoneType';
 
 @Table({
   tableName: 'phoneDetails',
@@ -27,7 +26,7 @@ export class PhoneDetails extends Model {
   name: string;
 
   @Column({
-    type: DataType.ARRAY(DataType.STRING),
+    type: DataType.ARRAY(DataType.TEXT),
     allowNull: false,
   })
   capacityAvailable: string[];
@@ -51,7 +50,7 @@ export class PhoneDetails extends Model {
   priceDiscount: number;
 
   @Column({
-    type: DataType.ARRAY(DataType.STRING),
+    type: DataType.ARRAY(DataType.TEXT),
     allowNull: false,
   })
   colorsAvailable: string[];
@@ -63,21 +62,20 @@ export class PhoneDetails extends Model {
   color: string;
 
   @Column({
-    type: DataType.ARRAY(DataType.STRING),
+    type: DataType.ARRAY(DataType.TEXT),
     allowNull: false,
   })
   images: string[];
 
   @Column({
-    type: DataType.JSON,
+    type: DataType.JSONB,
     allowNull: false,
   })
-  description: PhoneDescription[];
+  description: { title: string; text: string[] }[];
 
   @Column({
-    allowNull: false,
-
     type: DataType.STRING,
+    allowNull: false,
   })
   screen: string;
 
@@ -112,7 +110,7 @@ export class PhoneDetails extends Model {
   zoom: string;
 
   @Column({
-    type: DataType.ARRAY(DataType.STRING),
+    type: DataType.ARRAY(DataType.TEXT),
     allowNull: false,
   })
   cell: string[];

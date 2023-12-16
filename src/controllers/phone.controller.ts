@@ -58,7 +58,7 @@ export const getPhoneLength = async (req: Request, res: Response) => {
 export const getRecomendation = async (req: Request, res: Response) => {
   const { phoneId } = req.params;
 
-  const a = await phoneService.findRecomendation(phoneId);
+  const phonesToRecomend = await phoneService.findRecomendation(phoneId);
 
-  res.send(a);
+  res.send(phonesToRecomend);
 };
