@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-export interface Phone {
+export interface PhoneType {
   id: number;
   category: string;
   phoneId: string;
@@ -16,7 +16,7 @@ export interface Phone {
   discount: number;
 }
 
-interface PhoneDescription {
+export interface PhoneDescription {
   title: string;
   test: string[];
 }

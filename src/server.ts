@@ -1,8 +1,13 @@
 import express from 'express';
 import path from 'path';
 import cors from 'cors';
-
 import { phoneRouter } from './routes/phone.route';
+import dotenv from 'dotenv';
+dotenv.config();
+
+import { connect } from './utils/initDb';
+
+connect();
 
 function createServer() {
   const app = express();
@@ -20,8 +25,8 @@ function createServer() {
   return app;
 }
 
-const PORT = 3005;
-
-createServer().listen(PORT, () => {
-  console.log(`🔥🚀🚀🚀 Server is running on http://localhost${PORT} 🔥🚀🚀🚀`);
+createServer().listen(process.env.PORT, () => {
+  console.log(
+    `🔥🚀🚀🚀 Server is running on http://localhost${process.env.PORT} 🔥🚀🚀🚀`,
+  );
 });

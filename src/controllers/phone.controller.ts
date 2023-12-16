@@ -1,24 +1,44 @@
 import * as phoneService from '../services/phone.service';
 import { Request, Response } from 'express';
 
-export const getAllPhones = (req: Request, res: Response) => {
-  const allPhones = phoneService.getAllWithPagination(req.query);
+// Find all phones
+export const getAllPhones = async (req: Request, res: Response) => {
+  const allPhones = await phoneService.findAll();
   res.send(allPhones);
 };
 
-export const getBiggestDiscount = (req: Request, res: Response) => {
-  res.send(phoneService.getBiggestDiscount());
+// Find one phone by id
+export const getOnePhone = async (req: Request, res: Response) => {
+  const { phoneId } = req.params;
+
+  const phone = await phoneService.findOnePhone(phoneId);
+
+  res.send(phone);
 };
 
-export const getNewest = (req: Request, res: Response) => {
-  res.send(phoneService.getNewest());
+// DONE | find phones with the biggest discount
+export const getBiggestDiscount = async (req: Request, res: Response) => {
+  const phonesWithDiscount = await phoneService.findBiggestDiscount();
+  res.send(phonesWithDiscount);
 };
 
-export const getPhone = async (req: Request, res: Response) => {
+// DONE | find newest models of the phones
+export const getNewest = async (req: Request, res: Response) => {
+  const newestPhones = await phoneService.findNewest();
+  console.log(newestPhones);
+
+  res.send(newestPhones);
+};
+
+// DONE | find phone details by phoneId
+export const getPhonesDetails = async (req: Request, res: Response) => {
   const { phoneId } = req.params;
 
   try {
-    const phoneDetail = await phoneService.getDetail(phoneId);
+    const phoneDetail = await phoneService.findPhonesDetails(phoneId);
+
+    console.log(phoneDetail);
+
     res.send(phoneDetail);
   } catch (error) {
     if ((error as NodeJS.ErrnoException).code === 'ENOENT') {
@@ -29,6 +49,16 @@ export const getPhone = async (req: Request, res: Response) => {
   }
 };
 
-export const getPhoneLength = (req: Request, res: Response) => {
-  res.send(phoneService.phonesLength());
+// DONE | find length of phone`s array
+export const getPhoneLength = async (req: Request, res: Response) => {
+  const phonesLength = await phoneService.findPhonesLength();
+  res.send(phonesLength);
+};
+
+export const getRecomendation = async (req: Request, res: Response) => {
+  const { phoneId } = req.params;
+
+  const a = await phoneService.findRecomendation(phoneId);
+
+  res.send(a);
 };
