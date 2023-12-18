@@ -7,6 +7,32 @@ export const getAllPhones = async (req: Request, res: Response) => {
   res.send(allPhones);
 };
 
+// Pagination
+export const getAllPhonesWithPagination = async (
+  req: Request,
+  res: Response,
+) => {
+  const { page = '1', sortBy = 'year', itemsPerPage = '16' } = req.query;
+
+  if (
+    typeof page !== 'string' ||
+    typeof sortBy !== 'string' ||
+    typeof itemsPerPage !== 'string'
+  ) {
+    res.sendStatus(422);
+
+    return;
+  }
+
+  const allPhonesWithPG = await phoneService.findAllWithPagination({
+    page,
+    sortBy,
+    itemsPerPage,
+  });
+
+  res.send(allPhonesWithPG);
+};
+
 // Find one phone by id
 export const getOnePhone = async (req: Request, res: Response) => {
   const { phoneId } = req.params;

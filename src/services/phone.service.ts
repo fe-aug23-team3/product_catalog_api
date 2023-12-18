@@ -1,92 +1,82 @@
-// import fs from 'fs';
-// import path from 'path';
 import dotenv from 'dotenv';
 import { Op } from 'sequelize';
-// import { QueryParams } from '../types/phoneType';
+import { PhoneQuery, sortType } from '../helpers/helper';
 import { Phone, PhoneDetails } from '../models';
 
 dotenv.config();
 
-// const pathToFile = path.join(__dirname, '../../api/', 'phones.json');
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+export const findAllWithPagination = async ({
+  page,
+  sortBy,
+  itemsPerPage,
+}: PhoneQuery) => {
+  const count = await Phone.count();
+  const validSortByValues = Object.values(sortType);
+  let offset = !isNaN(+page) && +page > 0 ? +page - 1 : 0;
+  let limit = !isNaN(+itemsPerPage) ? +itemsPerPage : 16;
 
-// const fileToRead = fs.readFileSync(pathToFile, 'utf-8');
+  const sort = validSortByValues.includes(sortBy) ? sortBy : sortType.Newest;
+  const order =
+    sortBy === sortType.Alphabetically || sortBy === sortType.Cheapest
+      ? 'ASC'
+      : 'DESC';
 
-// export const phones: Phone[] = JSON.parse(fileToRead).map((phone: Phone) => {
-//   const discount = Math.round(
-//     ((phone.fullPrice - phone.price) / phone.fullPrice) * 100,
-//   );
+  const items = [4, 8, 16];
 
-//   return {
-//     ...phone,
-//     discount,
-//     image: `${process.env.SERVER_PATH}/public/${phone.image}`,
-//   };
-// });
+  if (!items.includes(+itemsPerPage)) {
+    limit = 16;
+  }
 
-// export const getAllWithPagination = (query: QueryParams) => {
-//   const { sortBy, itemsPerPage, page }: QueryParams = query;
+  if (itemsPerPage === 'all') {
+    limit = count;
+  }
 
-//   let filteredPhones: Phone[] = [...phones];
+  const maxPage = Math.ceil(count / limit) - 1;
 
-//   switch (sortBy) {
-//     case 'Newest':
-//       filteredPhones = phones.sort((a: Phone, b: Phone) => b.year - a.year);
-//       break;
-//     case 'Oldest':
-//       filteredPhones = phones.sort((a: Phone, b: Phone) => a.year - b.year);
-//       break;
-//     case 'Alphabetically':
-//       filteredPhones = phones.sort((a: Phone, b: Phone) =>
-//         a.name.localeCompare(b.name),
-//       );
-//       break;
+  if (offset > maxPage) {
+    offset = maxPage;
+  }
 
-//     case 'Cheapest':
-//       filteredPhones = phones.sort((a: Phone, b: Phone) => a.price - b.price);
-//       break;
+  let sortByCol = sortType.Alphabetically;
 
-//     default:
-//       break;
-//   }
+  if (sort === sortType.Newest) {
+    sortByCol = 'year';
+  }
 
-//   if (itemsPerPage === 'All') {
-//     return filteredPhones;
-//   }
+  if (sort === sortType.Cheapest) {
+    sortByCol = 'price';
+  }
 
-//   if (itemsPerPage && page) {
-//     filteredPhones = filteredPhones.slice(
-//       (Number(page) - 1) * Number(itemsPerPage),
-//       Number(page) * Number(itemsPerPage),
-//     );
-//   }
-
-//   return filteredPhones;
-// };
+  return Phone.findAndCountAll({
+    offset: offset,
+    limit: limit,
+    order: [[sortByCol, order]],
+  });
+};
 
 export const findBiggestDiscount = async () => {
-  const data = await findAll();
+  const data = await Phone.findAll({
+    order: [['discount', 'DESC']],
+  });
 
-  const sortByDiscount = data.sort(
-    (a: Phone, b: Phone) => b.discount - a.discount,
-  );
-
-  return sortByDiscount.slice(0, 8);
+  return data.slice(0, 8);
 };
 
 export const findAll = async () => await Phone.findAll();
 
 export const findNewest = async () => {
-  const data = await findAll();
+  const data = await Phone.findAll({
+    order: [['year', 'DESC']],
+  });
 
-  const sortByYear = data.sort((a: Phone, b: Phone) => b.year - a.year);
-
-  return sortByYear.slice(0, 8);
+  return data.slice(0, 8);
 };
 
 export const findPhonesLength = async () => {
-  const allPhones = await findAll();
+  const allPhones = await Phone.count();
 
-  return String(allPhones.length);
+  return String(allPhones);
 };
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
