@@ -5,7 +5,6 @@ import { Table, Column, Model, DataType } from 'sequelize-typescript';
   timestamps: false,
 })
 export class PhoneDetails extends Model {
-  // @Unique
   @Column({
     primaryKey: true,
     type: DataType.STRING,
